@@ -97,7 +97,10 @@
                     <!-- Asset code row -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
                         <TextBlock VerticalAlignment="Center" Margin="0,0,5,0" Text="Asset Code:"/>
-                        <TextBox Width="160" Margin="0,0,5,0" Name="TB_Asset"/>
+                        <TextBox Width="100" Margin="0,0,5,0" Name="TB_Asset"/>
+
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,5,0" Text="Level:"/>
+                        <TextBox Width="100" Margin="0,0,5,0" Name="TB_Level"/>
                     </StackPanel>
 
                     <!-- Asset list -->
