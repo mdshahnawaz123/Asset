@@ -71,11 +71,25 @@ namespace Asset.UI
                 return;
             }
 
-            var ele = Extension.DataLab.GetElementsInRoom(doc, selectedRoom);
-            foreach (var element in ele)
+            var elementsInRoom = Extension.DataLab.GetElementsInRoom(doc, selectedRoom);
+
+            if (elementsInRoom == null || !elementsInRoom.Any())
             {
-                uidoc.ShowElements(element);
+                TaskDialog.Show("Highlight", "No elements found in the selected room.");
+                return;
             }
+
+            // Collect all element IDs at once
+            var elementIds = elementsInRoom.Select(el => el.Id).ToList();
+
+            // Set selection to all elements
+            uidoc.Selection.SetElementIds(elementIds);
+
+            // Show all elements (zoom to fit)
+            uidoc.ShowElements(elementIds);
+
+            // Isolate all elements temporarily in the active view
+            uidoc.ActiveView.IsolateElementsTemporary(elementIds);
         }
 
         private void LV_Room_SelectionChanged(object sender, SelectionChangedEventArgs e)
