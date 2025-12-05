@@ -4,6 +4,8 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +22,8 @@ namespace Asset.UI
         private Autodesk.Revit.UI.ExternalEvent externalEvent;
         private AssetExternal handler;
         private List<RoomInfo> allRooms;
+
+        public ObservableCollection<CategoryItem> CategoryItems { get; set; } = new ObservableCollection<CategoryItem>();
 
         public AssetUI(Document doc, UIDocument uidoc, Autodesk.Revit.UI.ExternalEvent externalEvent, AssetExternal handler)
         {
@@ -38,6 +42,11 @@ namespace Asset.UI
             this.externalEvent = externalEvent;
             this.handler = handler;
             this.allRooms = new List<RoomInfo>(); // Initialize empty list
+            LoadCategories();
+            LoadGroupParameters();
+
+
+
 
             // Subscribe to events
             if (LV_Room != null)
@@ -48,10 +57,140 @@ namespace Asset.UI
         }
 
         // Fill Room list - now includes linked model rooms
+
+        private void LoadCategories()
+        {
+            var catlist = Extension.DataLab.GetCategories(doc);
+            if (catlist == null) return;
+
+            CategoryItems.Clear();
+            foreach (var cat in catlist.OrderBy(c => c.Name)) // optional sort
+            {
+                CategoryItems.Add(new CategoryItem(cat));
+                LB_Category.Items.Add(cat);
+            }
+        }
+
+        public class CategoryItem : INotifyPropertyChanged
+        {
+            private bool _isChecked;
+
+            public CategoryItem(Category category)
+            {
+                Category = category;
+            }
+
+            public Category Category { get; }
+
+            public string Name => Category?.Name;
+
+            public bool IsChecked
+            {
+                get => _isChecked;
+                set
+                {
+                    if (_isChecked == value) return;
+                    _isChecked = value;
+                    OnPropertyChanged(nameof(IsChecked));
+                }
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected virtual void OnPropertyChanged(string propertyName) =>
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        //Lets Load the other Data Types
+
+        public static IList<BuiltInParameterGroup> GetParameterGroups()
+        {
+            return Enum.GetValues(typeof(BuiltInParameterGroup))
+                       .Cast<BuiltInParameterGroup>()
+                       .Where(g => g != BuiltInParameterGroup.INVALID)
+                       .ToList();
+        }
+
+        public class ParameterGroupItem
+        {
+            public BuiltInParameterGroup Group { get; }
+            public string Name { get; }
+
+            public ParameterGroupItem(BuiltInParameterGroup group)
+            {
+                Group = group;
+                Name = LabelUtils.GetLabelFor(group);  // "Dimensions", "Electrical", etc.
+            }
+
+            public override string ToString() => Name;   // optional
+        }
+
+        public class DataTypeItem
+        {
+            public ForgeTypeId Id { get; }
+            public string Name { get; }
+
+            public DataTypeItem(ForgeTypeId id)
+            {
+                Id = id;
+                Name = LabelUtils.GetLabelForSpec(id); // "Length", "Text", etc.
+            }
+
+            public override string ToString() => Name;
+        }
+
+        public static IList<DataTypeItem> GetDataTypes()
+        {
+            // Only the common “shared parameter” style data types
+            var ids = new ForgeTypeId[]
+            {
+                SpecTypeId.String.Text,           // Text
+                SpecTypeId.Int.Integer,           // Integer
+                SpecTypeId.Number,                // Number
+                SpecTypeId.Length,                // Length
+                SpecTypeId.Area,                  // Area
+                SpecTypeId.Volume,                // Volume
+                SpecTypeId.Angle,                 // Angle
+                SpecTypeId.Slope,                 // Slope
+                SpecTypeId.Currency,              // Currency
+                SpecTypeId.Boolean.YesNo,         // Yes/No
+                SpecTypeId.String.MultilineText  // Multiline Text
+            };
+
+            return ids
+                .Select(id => new DataTypeItem(id))
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+
+
+        public void LoadGroupParameters()
+        {
+            var groups = GetParameterGroups();
+
+            var items = groups
+                .Select(g => new ParameterGroupItem(g))
+                .OrderBy(x => x.Name)
+                .ToList();
+
+            CB_GroupParam.ItemsSource = items;
+            CB_GroupParam.DisplayMemberPath = "Name";   // what user sees
+            CB_GroupParam.SelectedValuePath = "Group";  // actual BuiltInParameterGroup
+
+            CB_DataType.ItemsSource = GetDataTypes();
+            CB_DataType.DisplayMemberPath = "Name"; // what user sees
+            CB_DataType.SelectedValuePath = "Id";
+        }
+
+
         public void info()
         {
             try
             {
+                
+
+
                 if (doc == null)
                 {
                     LB_Status.Text = "Error: Document is null";
@@ -435,6 +574,15 @@ namespace Asset.UI
             {
                 LB_Status.Text = $"Search error: {ex.Message}";
             }
+        }
+
+        //This Will use for Create the Shared Parameter
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            TaskDialog.Show("Message", "Hello User Parameter Binding still in Process Just to Automate the ABS Parameter USE AS PER YOUTUBE SHARED PARAMETER FILE : YOUTUBE:-https://www.youtube.com/@BIMDigitalDesign");
+
         }
     }
 }

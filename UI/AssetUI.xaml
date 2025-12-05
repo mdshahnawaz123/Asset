@@ -8,6 +8,7 @@
         Title="ABS Wizz"
         Height="600"
         Width="960"
+        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
@@ -246,7 +247,64 @@
                     </Border>
 
                     <!-- Asset list -->
-                    <ListBox Grid.Row="3" Margin="5"/>
+                    <!-- Row 3 content -->
+                    <Grid Grid.Row="3" Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <!-- left = list, right = label/text/combobox -->
+                            <ColumnDefinition Width="1.5*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left side: categories with checkboxes -->
+                        <Grid Grid.Column="1" Margin="0,0,5,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header -->
+                            <Label Grid.Row="0" Content="Categories List" FontWeight="Bold" Padding="0"/>
+
+                            <!-- List with checkboxes -->
+                            <ListView Grid.Row="1" x:Name="LB_Category" Width="Auto">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <CheckBox Margin="0,0,4,0"/>
+                                            <TextBlock Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                        </Grid>
+
+                        <!-- Right side: label + text + combo -->
+                        <StackPanel Grid.Column="0" Margin="5,0,0,0">
+                            <Label Content="Parameter Name:"/>
+                            <TextBox Width="120" Name="TB_ParameterName"/>
+                            <Label Content="Data Type:"/>
+                            <ComboBox Width="120" Name="CB_DataType"/>
+                            <Label Content="Group Parameter under:"/>
+                            <ComboBox Width="120" Name="CB_GroupParam"/>
+                            <CheckBox Margin="0,10,0,0" 
+                                      x:Name="CB_Instance" 
+                                      Content="Instance" 
+                                      IsChecked="False"/>
+                            <CheckBox Margin="0,10,0,0" 
+                                      x:Name="CB_Type" 
+                                      Content="Type" 
+                                      IsChecked="False"/>
+                            <Button Width="100" 
+                                    Margin="0,15,0,0" 
+                                    Content="Create Parameter" 
+                                    Click="Button_Click"/>
+                        </StackPanel>
+
+                    </Grid>
+
+
                 </Grid>
             </GroupBox>
         </Grid>
@@ -259,11 +317,11 @@
                            FontSize="11"
                            x:Name="LB_Status"
                            Text="Ready"/>
-                <TextBlock DockPanel.Dock="Right"
-                           VerticalAlignment="Center"
+                <TextBlock DockPanel.Dock="Left"
                            FontSize="11"
+                           VerticalAlignment="Center" Margin="600,0,0,0"
                            x:Name="LB_UserInfo"
-                           Text="User"/>
+                           Text="mdshahnawaz9570@gmail.com" Width="200"/>
             </DockPanel>
         </Border>
     </Grid>

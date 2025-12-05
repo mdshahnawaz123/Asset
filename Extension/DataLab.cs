@@ -395,5 +395,36 @@ namespace Asset.Extension
                 return false;
             }
         }
+        /// <summary>
+        /// Get the List of Category in Revit Document
+        /// </summary>
+
+        public static List<Category> GetCategories(Document doc)
+        {
+            var categories = new List<Category>();
+            try
+            {
+                Categories revitCategories = doc.Settings.Categories;
+                foreach (Category cat in revitCategories)
+                {
+                    if(cat.CategoryType != CategoryType.Model)
+                    {
+                        continue;
+                    }
+                    // Exclude certain categories if needed
+                    if (cat.Id.IntegerValue == (int)BuiltInCategory.OST_Rooms ||
+                        cat.Id.IntegerValue == (int)BuiltInCategory.OST_AreaTags)
+                    {
+                        continue;
+                    }
+                    categories.Add(cat);
+                }
+            }
+            catch
+            {
+                // Return whatever categories we could collect
+            }
+            return categories;
+        }
     }
 }
