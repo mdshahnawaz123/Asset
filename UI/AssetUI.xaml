@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Asset.UI"
         mc:Ignorable="d"
         Title="ABS Wizz"
-        Height="550"
+        Height="600"
         Width="960"
         WindowStartupLocation="CenterScreen">
     <Grid>
@@ -52,22 +52,85 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
+                    <!-- Include Linked Models Checkbox -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                        <CheckBox x:Name="CB_IncludeLinkedModels" 
+                                  Content="Include Linked Models" 
+                                  IsChecked="False"
+                                  VerticalAlignment="Center"
+                                  Checked="CB_IncludeLinkedModels_Changed" 
+                                  Unchecked="CB_IncludeLinkedModels_Changed"/>
+                        <Button Content="ℹ" 
+                                Width="20" 
+                                Height="20"
+                                Margin="5,0,0,0"
+                                ToolTip="Show room sources"
+                                Click="ShowRoomSources_Click"
+                                FontWeight="Bold"
+                                FontSize="10"/>
+                    </StackPanel>
+
                     <!-- Search / filter box -->
-                    <TextBox Margin="5" Height="22"/>
+                    <TextBox Grid.Row="1" 
+                             x:Name="TB_SearchRoom"
+                             Margin="5" 
+                             Height="22"
+                             TextChanged="TB_SearchRoom_TextChanged"/>
 
                     <!-- Room list -->
-                    <ListBox Grid.Row="1" Margin="5" x:Name="LV_Room"/>
+                    <ListBox Grid.Row="2" 
+                             Margin="5" 
+                             x:Name="LV_Room">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding RoomNumber}" 
+                                               FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding RoomName}" 
+                                               FontSize="10"/>
+                                    <TextBlock FontSize="9" 
+                                               Foreground="Gray">
+                                        <Run Text="Source:"/>
+                                        <Run Text="{Binding LinkName}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
 
-
+                    <!-- Room Source Label -->
+                    <Border Grid.Row="3" 
+                            Margin="5,0,5,5" 
+                            Padding="5"
+                            Background="#F0F0F0"
+                            BorderBrush="#CCCCCC"
+                            BorderThickness="1"
+                            CornerRadius="3">
+                        <TextBlock x:Name="LB_RoomSource" 
+                                   FontSize="10"
+                                   TextWrapping="Wrap"
+                                   Text="Select a room to view details"/>
+                    </Border>
 
                     <!-- Buttons -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5" HorizontalAlignment="Left">
-                        <Button Width="90" Margin="0,5,5,0" Content="Assign ABS" Click="Assign_ABS"/>
-                        <Button Width="110" Margin="0,5,0,0" Content="Highlight in Model" Click="Highlight_Model"/>
+                    <StackPanel Grid.Row="4" 
+                                Orientation="Horizontal" 
+                                Margin="5" 
+                                HorizontalAlignment="Left">
+                        <Button Width="90" 
+                                Margin="0,5,5,0" 
+                                Content="Assign ABS" 
+                                Click="Assign_ABS"/>
+                        <Button Width="110" 
+                                Margin="0,5,0,0" 
+                                Content="Highlight in Model" 
+                                Click="Highlight_Model"/>
                     </StackPanel>
                 </Grid>
             </GroupBox>
@@ -78,11 +141,35 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <TextBlock Margin="5,5,5,0"
                                Text="Elements inside the selected room"/>
-                    <ListBox Grid.Row="1" Margin="5" Name="LV_Element"/>
+
+                    <ListBox Grid.Row="1" 
+                             Margin="5" 
+                             Name="LV_Element">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Category.Name}" 
+                                               FontSize="9" 
+                                               Foreground="Gray"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Element count label -->
+                    <TextBlock Grid.Row="2" 
+                               x:Name="LB_ElementCount"
+                               Margin="5,0,5,5" 
+                               FontSize="10"
+                               Foreground="Gray"
+                               Text="0 elements"/>
                 </Grid>
             </GroupBox>
 
@@ -91,20 +178,75 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
                     <!-- Asset code row -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
-                        <TextBlock VerticalAlignment="Center" Margin="0,0,5,0" Text="Asset Code:"/>
-                        <TextBox Width="100" Margin="0,0,5,0" Name="TB_Asset"/>
+                    <StackPanel Grid.Row="0" 
+                                Orientation="Horizontal" 
+                                Margin="5">
+                        <TextBlock VerticalAlignment="Center" 
+                                   Margin="0,0,5,0" 
+                                   Text="Asset Code:"/>
+                        <TextBox Width="100" 
+                                 Margin="0,0,5,0" 
+                                 Name="TB_Asset"/>
 
-                        <TextBlock VerticalAlignment="Center" Margin="0,0,5,0" Text="Asset Level:"/>
-                        <TextBox Width="100" Margin="0,0,5,0" Name="TB_Level"/>
+                        <TextBlock VerticalAlignment="Center" 
+                                   Margin="0,0,5,0" 
+                                   Text="Asset Level:"/>
+                        <TextBox Width="100" 
+                                 Margin="0,0,5,0" 
+                                 Name="TB_Level"/>
                     </StackPanel>
 
+                    <!-- Room Number Validation -->
+                    <GroupBox Grid.Row="1" 
+                              Header="Room Number Validation" 
+                              Margin="5">
+                        <StackPanel Orientation="Horizontal" 
+                                    Margin="5">
+                            <TextBlock VerticalAlignment="Center" 
+                                       Margin="0,0,5,0" 
+                                       Text="Room #:"/>
+                            <TextBox x:Name="TB_RoomNumberValidation" 
+                                     Width="100" 
+                                     Margin="0,0,5,0"/>
+                            <Button Content="Validate" 
+                                    Width="70"
+                                    Click="ValidateRoom_Click"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Validation Result -->
+                    <Border Grid.Row="2" 
+                            Margin="5" 
+                            Padding="8"
+                            Background="#FFFACD"
+                            BorderBrush="#FFD700"
+                            BorderThickness="1"
+                            CornerRadius="3"
+                            Visibility="Collapsed"
+                            x:Name="ValidationResultPanel">
+                        <StackPanel>
+                            <TextBlock x:Name="LB_ValidationResult" 
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       Text="Validation result will appear here"/>
+                            <TextBlock x:Name="LB_ValidationDetails" 
+                                       FontSize="10"
+                                       Margin="0,5,0,0"
+                                       TextWrapping="Wrap"
+                                       Foreground="DarkGreen"
+                                       Text="Details..."/>
+                        </StackPanel>
+                    </Border>
+
                     <!-- Asset list -->
-                    <ListBox Grid.Row="1" Margin="5"/>
+                    <ListBox Grid.Row="3" Margin="5"/>
                 </Grid>
             </GroupBox>
         </Grid>
@@ -115,10 +257,12 @@
                 <TextBlock DockPanel.Dock="Left"
                            VerticalAlignment="Center"
                            FontSize="11"
+                           x:Name="LB_Status"
                            Text="Ready"/>
                 <TextBlock DockPanel.Dock="Right"
                            VerticalAlignment="Center"
                            FontSize="11"
+                           x:Name="LB_UserInfo"
                            Text="User"/>
             </DockPanel>
         </Border>

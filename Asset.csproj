@@ -67,6 +67,8 @@
   <ItemGroup>
     <Compile Include="Commands\AssetCommand.cs" />
     <Compile Include="Extension\DataLab.cs" />
+    <Compile Include="Extension\DoorWindowRoomLogic.cs" />
+    <Compile Include="Extension\ElementDisplayInfo.cs" />
     <Compile Include="ExternalEvent\AssetExternal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\AssetUI.xaml.cs">
