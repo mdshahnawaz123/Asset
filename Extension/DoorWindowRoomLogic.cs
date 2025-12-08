@@ -21,8 +21,8 @@ namespace Asset.Extension
             if (category == null)
                 return null;
 
-            bool isDoor = category.Id.IntegerValue == (int)BuiltInCategory.OST_Doors;
-            bool isWindow = category.Id.IntegerValue == (int)BuiltInCategory.OST_Windows;
+            bool isDoor = category.Id.Value == (int)BuiltInCategory.OST_Doors;
+            bool isWindow = category.Id.Value == (int)BuiltInCategory.OST_Windows;
 
             if (!isDoor && !isWindow)
                 return null;

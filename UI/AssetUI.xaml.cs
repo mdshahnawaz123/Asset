@@ -43,7 +43,7 @@ namespace Asset.UI
             this.handler = handler;
             this.allRooms = new List<RoomInfo>(); // Initialize empty list
             LoadCategories();
-            LoadGroupParameters();
+            //LoadGroupParameters();
 
 
 
@@ -103,85 +103,85 @@ namespace Asset.UI
 
         //Lets Load the other Data Types
 
-        public static IList<BuiltInParameterGroup> GetParameterGroups()
-        {
-            return Enum.GetValues(typeof(BuiltInParameterGroup))
-                       .Cast<BuiltInParameterGroup>()
-                       .Where(g => g != BuiltInParameterGroup.INVALID)
-                       .ToList();
-        }
+        //public static IList<GroupTypeId> GetParameterGroups()
+        //{
+        //    return Enum.GetValues(typeof(GroupTypeId))
+        //               .Cast<GroupTypeId>()
+        //               .Where(g => g != BuiltInParameterGroup.INVALID)
+        //               .ToList();
+        //}
 
-        public class ParameterGroupItem
-        {
-            public BuiltInParameterGroup Group { get; }
-            public string Name { get; }
+        //public class ParameterGroupItem
+        //{
+        //    public BuiltInParameterGroup Group { get; }
+        //    public string Name { get; }
 
-            public ParameterGroupItem(BuiltInParameterGroup group)
-            {
-                Group = group;
-                Name = LabelUtils.GetLabelFor(group);  // "Dimensions", "Electrical", etc.
-            }
+        //    public ParameterGroupItem(BuiltInParameterGroup group)
+        //    {
+        //        Group = group;
+        //        Name = LabelUtils.GetLabelFor(group);  // "Dimensions", "Electrical", etc.
+        //    }
 
-            public override string ToString() => Name;   // optional
-        }
+        //    public override string ToString() => Name;   // optional
+        //}
 
-        public class DataTypeItem
-        {
-            public ForgeTypeId Id { get; }
-            public string Name { get; }
+        //public class DataTypeItem
+        //{
+        //    public ForgeTypeId Id { get; }
+        //    public string Name { get; }
 
-            public DataTypeItem(ForgeTypeId id)
-            {
-                Id = id;
-                Name = LabelUtils.GetLabelForSpec(id); // "Length", "Text", etc.
-            }
+        //    public DataTypeItem(ForgeTypeId id)
+        //    {
+        //        Id = id;
+        //        Name = LabelUtils.GetLabelForSpec(id); // "Length", "Text", etc.
+        //    }
 
-            public override string ToString() => Name;
-        }
+        //    public override string ToString() => Name;
+        //}
 
-        public static IList<DataTypeItem> GetDataTypes()
-        {
-            // Only the common “shared parameter” style data types
-            var ids = new ForgeTypeId[]
-            {
-                SpecTypeId.String.Text,           // Text
-                SpecTypeId.Int.Integer,           // Integer
-                SpecTypeId.Number,                // Number
-                SpecTypeId.Length,                // Length
-                SpecTypeId.Area,                  // Area
-                SpecTypeId.Volume,                // Volume
-                SpecTypeId.Angle,                 // Angle
-                SpecTypeId.Slope,                 // Slope
-                SpecTypeId.Currency,              // Currency
-                SpecTypeId.Boolean.YesNo,         // Yes/No
-                SpecTypeId.String.MultilineText  // Multiline Text
-            };
+        //public static IList<DataTypeItem> GetDataTypes()
+        //{
+        //    // Only the common “shared parameter” style data types
+        //    var ids = new ForgeTypeId[]
+        //    {
+        //        SpecTypeId.String.Text,           // Text
+        //        SpecTypeId.Int.Integer,           // Integer
+        //        SpecTypeId.Number,                // Number
+        //        SpecTypeId.Length,                // Length
+        //        SpecTypeId.Area,                  // Area
+        //        SpecTypeId.Volume,                // Volume
+        //        SpecTypeId.Angle,                 // Angle
+        //        SpecTypeId.Slope,                 // Slope
+        //        SpecTypeId.Currency,              // Currency
+        //        SpecTypeId.Boolean.YesNo,         // Yes/No
+        //        SpecTypeId.String.MultilineText  // Multiline Text
+        //    };
 
-            return ids
-                .Select(id => new DataTypeItem(id))
-                .OrderBy(x => x.Name)
-                .ToList();
-        }
+        //    return ids
+        //        .Select(id => new DataTypeItem(id))
+        //        .OrderBy(x => x.Name)
+        //        .ToList();
+        //}
 
 
 
-        public void LoadGroupParameters()
-        {
-            var groups = GetParameterGroups();
+        //public void LoadGroupParameters()
+        //{
+        //    var groups = GetParameterGroups();
 
-            var items = groups
-                .Select(g => new ParameterGroupItem(g))
-                .OrderBy(x => x.Name)
-                .ToList();
+        //    var items = groups
+        //        .Select(g => new ParameterGroupItem(g))
+        //        .OrderBy(x => x.Name)
+        //        .ToList();
 
-            CB_GroupParam.ItemsSource = items;
-            CB_GroupParam.DisplayMemberPath = "Name";   // what user sees
-            CB_GroupParam.SelectedValuePath = "Group";  // actual BuiltInParameterGroup
+        //    CB_GroupParam.ItemsSource = items;
+        //    CB_GroupParam.DisplayMemberPath = "Name";   // what user sees
+        //    CB_GroupParam.SelectedValuePath = "Group";  // actual BuiltInParameterGroup
 
-            CB_DataType.ItemsSource = GetDataTypes();
-            CB_DataType.DisplayMemberPath = "Name"; // what user sees
-            CB_DataType.SelectedValuePath = "Id";
-        }
+        //    CB_DataType.ItemsSource = GetDataTypes();
+        //    CB_DataType.DisplayMemberPath = "Name"; // what user sees
+        //    CB_DataType.SelectedValuePath = "Id";
+        //}
 
 
         public void info()

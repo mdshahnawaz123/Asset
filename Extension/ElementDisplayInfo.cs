@@ -65,9 +65,9 @@ namespace Asset.Extension
             // Last resort: category name + ID
             var category = element.Category;
             if (category != null)
-                return $"{category.Name} [{element.Id.IntegerValue}]";
+                return $"{category.Name} [{element.Id.Value}]";
 
-            return $"Element [{element.Id.IntegerValue}]";
+            return $"Element [{element.Id.Value}]";
         }
 
         private static string GetElementTypeName(Element element)
@@ -87,9 +87,9 @@ namespace Asset.Extension
                 var category = fi.Category;
                 if (category != null)
                 {
-                    if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Doors)
+                    if (category.Id.Value == (int)BuiltInCategory.OST_Doors)
                         return "Door";
-                    else if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Windows)
+                    else if (category.Id.Value == (int)BuiltInCategory.OST_Windows)
                         return "Window";
                     else
                         return category.Name;
@@ -107,8 +107,8 @@ namespace Asset.Extension
                 var category = fi.Category;
                 if (category != null)
                 {
-                    bool isDoor = category.Id.IntegerValue == (int)BuiltInCategory.OST_Doors;
-                    bool isWindow = category.Id.IntegerValue == (int)BuiltInCategory.OST_Windows;
+                    bool isDoor = category.Id.Value == (int)BuiltInCategory.OST_Doors;
+                    bool isWindow = category.Id.Value == (int)BuiltInCategory.OST_Windows;
 
                     if (isDoor || isWindow)
                     {

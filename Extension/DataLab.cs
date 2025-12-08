@@ -247,8 +247,8 @@ namespace Asset.Extension
                     var cat = fi.Category;
                     if (cat == null) return false;
 
-                    bool isDoor = cat.Id.IntegerValue == (int)BuiltInCategory.OST_Doors;
-                    bool isWindow = cat.Id.IntegerValue == (int)BuiltInCategory.OST_Windows;
+                    bool isDoor = cat.Id.Value == (int)BuiltInCategory.OST_Doors;
+                    bool isWindow = cat.Id.Value == (int)BuiltInCategory.OST_Windows;
 
                     if (isDoor || isWindow)
                         return false;
@@ -412,8 +412,8 @@ namespace Asset.Extension
                         continue;
                     }
                     // Exclude certain categories if needed
-                    if (cat.Id.IntegerValue == (int)BuiltInCategory.OST_Rooms ||
-                        cat.Id.IntegerValue == (int)BuiltInCategory.OST_AreaTags)
+                    if (cat.Id.Value == (int)BuiltInCategory.OST_Rooms ||
+                        cat.Id.Value == (int)BuiltInCategory.OST_AreaTags)
                     {
                         continue;
                     }

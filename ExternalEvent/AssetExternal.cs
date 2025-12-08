@@ -191,7 +191,7 @@ public class AssetExternal : IExternalEventHandler
 
         foreach (var annotCat in annotationCategories)
         {
-            if (category.Id.IntegerValue == (int)annotCat)
+            if (category.Id.Value == (int)annotCat)
                 return true;
         }
 
