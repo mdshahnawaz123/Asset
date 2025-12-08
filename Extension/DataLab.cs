@@ -5,6 +5,7 @@ using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.DB.Electrical;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace Asset.Extension
 {
@@ -407,7 +408,7 @@ namespace Asset.Extension
                 Categories revitCategories = doc.Settings.Categories;
                 foreach (Category cat in revitCategories)
                 {
-                    if(cat.CategoryType != CategoryType.Model)
+                    if (cat.CategoryType != CategoryType.Model)
                     {
                         continue;
                     }
@@ -426,5 +427,74 @@ namespace Asset.Extension
             }
             return categories;
         }
+
+        //Extension Method for Level
+
+        public static IList<Level> getLevel(this Document doc)
+        {
+            var lvl = new FilteredElementCollector(doc).
+                OfClass(typeof(Level))
+                .Cast<Level>()
+                .OrderBy(x => x.Elevation)
+                .ToList();
+            return lvl;
+            
+        }
+
+        //Let's Create the Extension Method for 3d Views:
+
+        public static IList<View3D> CreateView3D(this Document doc)
+        {
+            IList<View3D> createdViews = new List<View3D>();
+
+            // 3D ViewFamilyType
+            ViewFamilyType viewFamilyType = new FilteredElementCollector(doc)
+                .OfClass(typeof(ViewFamilyType))
+                .Cast<ViewFamilyType>()
+                .FirstOrDefault(x => x.ViewFamily == ViewFamily.ThreeDimensional);
+
+            if (viewFamilyType == null)
+                throw new InvalidOperationException("No 3D ViewFamilyType found in this document.");
+
+            // Levels
+            var levels = doc.getLevel();
+            if (levels == null || !levels.Any())
+                throw new InvalidOperationException("No levels found in this document.");
+
+            // Existing 3D view names
+            HashSet<string> existingViewNames = new FilteredElementCollector(doc)
+                .OfClass(typeof(View3D))
+                .Cast<View3D>()
+                .Select(v => v.Name)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var lvl in levels)
+            {
+                string viewName = $"3D-{lvl.Name}";
+
+                if (existingViewNames.Contains(viewName))
+                    continue;
+
+                View3D view3D = View3D.CreateIsometric(doc, viewFamilyType.Id);
+
+                // Proper section box volume
+                var bb = new BoundingBoxXYZ
+                {
+                    Min = new XYZ(-100, -100, lvl.Elevation - 4),
+                    Max = new XYZ(100, 100, lvl.Elevation + 7)
+                };
+
+                view3D.IsSectionBoxActive = true;
+                view3D.SetSectionBox(bb);
+
+                view3D.Name = viewName;
+
+                createdViews.Add(view3D);
+                existingViewNames.Add(viewName);
+            }
+
+            return createdViews;
+        }
+
     }
 }

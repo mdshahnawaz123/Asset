@@ -11,16 +11,24 @@ namespace Asset
     {
         private const string TargetTabName = "BIM Digital Design";
         private const string PanelName = "Asset Panel";
+
+        // ---- Asset Tool button (existing) ---------------------------
         private const string ButtonInternalName = "Asset_Assign";
         private const string ButtonText = "Asset Tool";
-        private const string ButtonTooltip = "Tool is use for Assign Asset information Based on ECD Asset Parameter";
+        private const string ButtonTooltip = "Tool is used for assigning asset information based on ECD Asset parameters.";
         private const string CommandClass = "Asset.Commands.PramCheck";
+
+        // ---- View 3D button (new) -----------------------------------
+        private const string View3DButtonInternalName = "Asset_View3D";
+        private const string View3DButtonText = "3D Views";
+        private const string View3DButtonTooltip = "Create 3D views for each level.";
+        private const string View3DCommandClass = "Asset.Commands.ViewCreation3D";
 
         private string AssemblyPath => Assembly.GetExecutingAssembly().Location;
 
         public Result OnStartup(UIControlledApplication application)
         {
-            // use RAW GitHub URL so JSON is returned, not HTML
+            // Remote auth JSON
             var source = "https://raw.githubusercontent.com/mdshahnawaz123/plugin-access-control/main/users.json";
 
             // ---- Auth service init ------------------------------------------------
@@ -31,7 +39,6 @@ namespace Asset
             }
             catch
             {
-                // log but don't block startup
                 TryLog("startup_auth.log", "AuthService init failed.");
             }
 
@@ -58,9 +65,14 @@ namespace Asset
                     }
                 }
 
+                // ----- Asset Tool button -----------------------------------------
                 if (!PanelHasButton(panel, ButtonInternalName))
                 {
-                    var pushData = new PushButtonData(ButtonInternalName, ButtonText, AssemblyPath, CommandClass)
+                    var pushData = new PushButtonData(
+                        ButtonInternalName,
+                        ButtonText,
+                        AssemblyPath,
+                        CommandClass)
                     {
                         ToolTip = ButtonTooltip
                     };
@@ -79,12 +91,38 @@ namespace Asset
                     catch { }
                 }
 
+                // ----- View Creation 3D button -----------------------------------
+                if (!PanelHasButton(panel, View3DButtonInternalName))
+                {
+                    var view3DPushData = new PushButtonData(
+                        View3DButtonInternalName,
+                        View3DButtonText,
+                        AssemblyPath,
+                        View3DCommandClass)
+                    {
+                        ToolTip = View3DButtonTooltip
+                    };
+
+                    var view3DItem = panel.AddItem(view3DPushData);
+                    var view3DPush = view3DItem as PushButton;
+
+                    try
+                    {
+                        // reuse same icon (change path if you have a different PNG)
+                        var large = LoadImageFromResource("Resources/3D.png");
+                        if (large != null && view3DPush != null) view3DPush.LargeImage = large;
+
+                        var small = LoadImageFromResource("Resources/3D.png");
+                        if (small != null && view3DPush != null) view3DPush.Image = small;
+                    }
+                    catch { }
+                }
+
                 return Result.Succeeded;
             }
             catch (Exception ex)
             {
                 TryLog("startup.log", "OnStartup exception: " + ex);
-                // still allow Revit to continue
                 return Result.Succeeded;
             }
         }
@@ -96,7 +134,7 @@ namespace Asset
         }
 
         // ---------------------------------------------------------------------
-        // Helper methods (same pattern as your CostAnalysis code)
+        // Helper methods
         // ---------------------------------------------------------------------
         private void TryLog(string fileName, string message)
         {
